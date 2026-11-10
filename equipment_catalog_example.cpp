@@ -14,7 +14,7 @@ using namespace std;
 struct Equipment
 {
     int assetCode;   // Identify one physical device; codes are unique.
-    string cabinet; // Keep its storage location attached to the code.
+    string cabinet; // Keep its storage location attached to the codee.
 };
 
 void displayEquipment(const Equipment equipment[], int count);
