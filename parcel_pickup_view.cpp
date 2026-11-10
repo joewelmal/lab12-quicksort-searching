@@ -59,7 +59,7 @@ int main()
     displayParcels(parcels, CAPACITY);
 
     // --- STEP D1: Activate after completing the search function ---
-    /*
+
     int target;
     cout << "Enter a pickup code: ";
     if (!(cin >> target))
@@ -78,7 +78,6 @@ int main()
         cout << "Pickup code " << readyView[position]->pickupCode
              << " | Locker: " << readyView[position]->locker << endl;
     }
-    */
 
     return 0;
 }
@@ -135,7 +134,29 @@ void quickSortReady(Parcel *view[], int first, int last)
 int binaryFindReady(Parcel *view[], int count, int target)
 {
     // TODO (Part D): Implement iterative binary search by pickupCode on the sorted view.
-    return -1; // Temporary placeholder; replace with the complete search.
+    int first = 0;
+    int last = count - 1;
+
+    while (first <= last)
+    {
+        int middle = first + (last - first) / 2;
+
+        if (view[middle]->pickupCode == target)
+        {
+            return middle;
+        }
+
+        if (view[middle]->pickupCode < target)
+        {
+            first = middle + 1;
+        }
+        else
+        {
+            last = middle - 1;
+        }
+    }
+
+    return -1; // Code not found in the ready view.
 }
 
 void displayParcels(const Parcel parcels[], int count)
@@ -188,7 +209,6 @@ void displayReady(Parcel *view[], int count)
  * Finally, positions 0 and 1 are swapped.
  * View: [190, 325, 640, 710, 580, 505].
  * The function returns boundary = 1.
-
  *
  * C4 - Data and memory
  * Explain what changes when swapping two Parcel pointers by reference.
@@ -202,12 +222,34 @@ void displayReady(Parcel *view[], int count)
  * objects were not created with new.
  * Sorting the pointers does not change the arrival order
  * or the information stored in the original parcels array.
-
  *
  * D3 - Search positions and absence
  * Trace code 505 and the absent ready-view code 460. Give the checked ranges
  * and explain why a view index cannot be used as an index into parcels.
  * Answer:
+ * The sorted ready view is [190, 325, 505, 580, 640, 710].
+ *
+ * Searching for code 505:
+ * first = 0, last = 5, middle = 2, code = 505.
+ * The target is found at view index 2.
+ *
+ * Searching for code 460:
+ * First check: first = 0, last = 5, middle = 2, code = 505.
+ * Since 460 is smaller, the next range is 0 to 1.
+ *
+ * Second check: first = 0, last = 1, middle = 0, code = 190.
+ * Since 460 is greater, the next range is 1 to 1.
+ *
+ * Third check: first = 1, last = 1, middle = 1, code = 325.
+ * Since 460 is greater, the next range is 2 to 1.
+ *
+ * The range is empty, so the function returns -1.
+ * Code 460 exists in the original array but is not ready.
+ * Therefore, it is not included in readyView.
+ *
+ * A view index cannot be used directly as an index into parcels
+ * because the view contains only ready parcels and is sorted
+ * independently of the original arrival order.
  *
  * D4 - Time and auxiliary space
  * For n ready parcels and q queries, compare sorting once then using binary
@@ -215,4 +257,19 @@ void displayReady(Parcel *view[], int count)
  * bounds for this quicksort, balanced-partition bounds, and iterative-search
  * auxiliary space. Distinguish the view storage from recursive-call storage.
  * Answer:
+ * Sorting once and using binary search for q queries takes
+ * O(n log n + q log n) time with balanced partitions.
+ *
+ * In the worst case, quicksort takes O(n^2) time,
+ * making the total O(n^2 + q log n).
+ *
+ * Scanning the unsorted ready view for every query takes
+ * O(qn) time in the worst case.
+ *
+ * The readyView array uses O(n) space for borrowed pointers.
+ * Quicksort uses O(log n) recursive-call space with balanced
+ * partitions and O(n) in the worst case.
+ *
+ * Iterative binary search uses O(1) auxiliary space
+ * because it does not create recursive calls.
  */
